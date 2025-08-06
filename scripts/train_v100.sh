@@ -12,7 +12,7 @@ module load cuda/12.6.2
 # module load python3/3.10.4
 
 nvidia-smi >> gpu-info-v100.txt
-source /scratch/rp06/sl5952/VACE/.venv/bin/activate
+source /scratch/rp06/sl5952/SHOP/.venv/bin/activate
 
 cd ..
 # Run training
