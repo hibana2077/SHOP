@@ -3,17 +3,20 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from typing import Optional, Tuple
-
+    
 class SHOPMLP(nn.Module):
     def __init__(self, in_channels: int, num_classes: int):
-        super(SHOPMLP, self).__init__()
-        self.fc1 = nn.Linear(in_channels, 512)
-        self.fc2 = nn.Linear(512, num_classes)
+        super().__init__()
+        self.hidden_size = 512
+        self.intermediate_size = 256
+        self.gate_proj = nn.Linear(in_channels, self.intermediate_size, bias=False)
+        self.up_proj = nn.Linear(in_channels, self.intermediate_size, bias=False)
+        self.down_proj = nn.Linear(self.intermediate_size, num_classes, bias=False)
+        self.act_fn = nn.GELU()
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = F.gelu(self.fc1(x))
-        x = self.fc2(x)
-        return x
+    def forward(self, x):
+        down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+        return down_proj
 
 class SHOPHead(nn.Module):
     """
@@ -61,14 +64,7 @@ class SHOPHead(nn.Module):
             feature_dim += proj_dim * (proj_dim + 1) // 2  # Upper triangular of covariance
         
         # Final classifier
-        # self.classifier = nn.Linear(feature_dim, num_classes)
         self.classifier = SHOPMLP(feature_dim, num_classes)
-
-        # Initialize classifier weights
-        nn.init.kaiming_normal_(self.classifier.fc1.weight, mode='fan_out')
-        nn.init.constant_(self.classifier.fc1.bias, 0)
-        nn.init.kaiming_normal_(self.classifier.fc2.weight, mode='fan_out')
-        nn.init.constant_(self.classifier.fc2.bias, 0)
 
     def _compute_moments(self, x: torch.Tensor) -> Tuple[torch.Tensor, ...]:
         """
