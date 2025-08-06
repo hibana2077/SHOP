@@ -177,6 +177,7 @@ class SHOPHead(nn.Module):
         
         # 4. Combine all features
         features = [gap_features, moment_3, moment_4, cross_moment_3, cross_moment_4]
+        # features = [moment_3, moment_4, cross_moment_3, cross_moment_4]
         
         # 5. Optional low-rank covariance
         if self.use_low_rank_cov:

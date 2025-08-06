@@ -22,9 +22,9 @@ training:
   pin_memory: true
   
   # Optimizer settings
-  optimizer: "sgd"
-  learning_rate: 0.01
-  weight_decay: 1e-4
+  optimizer: "adamw"
+  learning_rate: 0.001
+  weight_decay: 0.05
   momentum: 0.9
   
   # Learning rate scheduler
