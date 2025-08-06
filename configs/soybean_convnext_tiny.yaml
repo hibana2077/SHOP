@@ -1,0 +1,31 @@
+# SHOP Model Configuration for Soybean dataset with ConvNeXt-Tiny backbone
+
+experiment:
+  name: "soybean_convnext_tiny_shop"
+  output_dir: "./experiments"
+  description: "SHOP with ConvNeXt-Tiny on Soybean dataset"
+
+dataset:
+  name: "soybean"
+  root: "./data"
+  download: true
+
+model:
+  config_name: "shop_convnext_tiny"
+  pretrained: true
+
+training:
+  batch_size: 32
+  val_batch_size: 64
+  epochs: 150
+  num_workers: 4
+  pin_memory: true
+  
+  # Optimizer settings
+  optimizer: "adamw"
+  learning_rate: 0.001
+  weight_decay: 0.05
+  
+  # Learning rate scheduler
+  scheduler: "cosine"
+  min_lr: 1e-6

@@ -1,0 +1,43 @@
+# SHOP Model Configuration for Cotton80 dataset with ConvNeXt-Tiny backbone
+
+experiment:
+  name: "cotton80_convnext_tiny_shop"
+  output_dir: "./experiments"
+  description: "SHOP with ConvNeXt-Tiny on Cotton80 dataset"
+
+dataset:
+  name: "cotton80"
+  root: "./data"
+  download: true
+
+model:
+  config_name: "shop_convnext_tiny"  # Use predefined configuration
+  # Alternatively, specify individual parameters:
+  # backbone_name: "convnext_tiny"
+  # proj_dim: 32
+  # use_low_rank_cov: true
+  # drop_rate: 0.1
+  pretrained: true
+
+training:
+  batch_size: 32
+  val_batch_size: 64
+  epochs: 200
+  num_workers: 4
+  pin_memory: true
+  
+  # Optimizer settings
+  optimizer: "adamw"
+  learning_rate: 0.001
+  weight_decay: 0.05
+  momentum: 0.9  # Only for SGD
+  
+  # Learning rate scheduler
+  scheduler: "cosine"
+  min_lr: 1e-6
+  
+  # Early stopping (optional)
+  early_stopping:
+    enabled: false
+    patience: 20
+    min_delta: 0.001

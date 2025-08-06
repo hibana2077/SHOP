@@ -15,8 +15,9 @@ nvidia-smi >> gpu-info-a100.txt
 source /scratch/rp06/sl5952/VACE/.venv/bin/activate
 
 cd ..
-# Run training
-# python train.py --config configs/cotton_convnext_tiny.yaml >> out_train_a100.txt
-# python train.py --config configs/cotton_r50.yaml >> out_train_a100.txt
+# Run training with SHOP models
+python train.py --config configs/cotton80_convnext_tiny.yaml >> out_train_a100.txt
+# python train.py --config configs/cotton80_resnet50.yaml >> out_train_a100.txt
+# python train.py --config configs/soybean_convnext_tiny.yaml >> out_train_a100.txt
 # python train.py --config configs/cotton_tiny_vit.yaml >> out_train_a100.txt
 python train.py --config configs/soybean_tiny_vit.yaml >> out_train_a100.txt

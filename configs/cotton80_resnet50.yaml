@@ -1,0 +1,38 @@
+# SHOP Model Configuration for Cotton80 dataset with ResNet-50 backbone
+
+experiment:
+  name: "cotton80_resnet50_shop"
+  output_dir: "./experiments"
+  description: "SHOP with ResNet-50 on Cotton80 dataset"
+
+dataset:
+  name: "cotton80"
+  root: "./data"
+  download: true
+
+model:
+  config_name: "shop_resnet50"  # Use predefined configuration
+  pretrained: true
+
+training:
+  batch_size: 64
+  val_batch_size: 128
+  epochs: 200
+  num_workers: 4
+  pin_memory: true
+  
+  # Optimizer settings
+  optimizer: "sgd"
+  learning_rate: 0.01
+  weight_decay: 1e-4
+  momentum: 0.9
+  
+  # Learning rate scheduler
+  scheduler: "cosine"
+  min_lr: 1e-6
+  
+  # Early stopping (optional)
+  early_stopping:
+    enabled: false
+    patience: 20
+    min_delta: 0.001
