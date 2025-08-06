@@ -4,6 +4,16 @@ import torch.nn.functional as F
 import numpy as np
 from typing import Optional, Tuple
 
+class SHOPMLP(nn.Module):
+    def __init__(self, in_channels: int, num_classes: int):
+        super(SHOPMLP, self).__init__()
+        self.fc1 = nn.Linear(in_channels, 512)
+        self.fc2 = nn.Linear(512, num_classes)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = F.gelu(self.fc1(x))
+        x = self.fc2(x)
+        return x
 
 class SHOPHead(nn.Module):
     """
@@ -44,19 +54,22 @@ class SHOPHead(nn.Module):
         
         # Calculate output feature dimension
         feature_dim = in_channels  # GAP
-        feature_dim += 2 * in_channels  # per-channel 3rd and 4th order moments
-        feature_dim += 2 * proj_dim  # cross-channel 3rd and 4th order moments
+        # feature_dim += 2 * in_channels  # per-channel 3rd and 4th order moments
+        # feature_dim += 2 * proj_dim  # cross-channel 3rd and 4th order moments
         
         if use_low_rank_cov:
             feature_dim += proj_dim * (proj_dim + 1) // 2  # Upper triangular of covariance
         
         # Final classifier
-        self.classifier = nn.Linear(feature_dim, num_classes)
-        
+        # self.classifier = nn.Linear(feature_dim, num_classes)
+        self.classifier = SHOPMLP(feature_dim, num_classes)
+
         # Initialize classifier weights
-        nn.init.kaiming_normal_(self.classifier.weight, mode='fan_out')
-        nn.init.constant_(self.classifier.bias, 0)
-    
+        nn.init.kaiming_normal_(self.classifier.fc1.weight, mode='fan_out')
+        nn.init.constant_(self.classifier.fc1.bias, 0)
+        nn.init.kaiming_normal_(self.classifier.fc2.weight, mode='fan_out')
+        nn.init.constant_(self.classifier.fc2.bias, 0)
+
     def _compute_moments(self, x: torch.Tensor) -> Tuple[torch.Tensor, ...]:
         """
         Compute per-channel standardized moments up to 4th order
@@ -176,8 +189,11 @@ class SHOPHead(nn.Module):
         cross_moment_3, cross_moment_4 = self._compute_cross_channel_moments(x)
         
         # 4. Combine all features
-        features = [gap_features, moment_3, moment_4, cross_moment_3, cross_moment_4]
-        # features = [moment_3, moment_4, cross_moment_3, cross_moment_4]
+        # features = [gap_features, moment_3, moment_4, cross_moment_3, cross_moment_4]
+        # features = [moment_3, moment_4]
+        features = [
+            gap_features
+        ]
         
         # 5. Optional low-rank covariance
         if self.use_low_rank_cov:
