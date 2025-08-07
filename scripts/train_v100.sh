@@ -16,4 +16,4 @@ source /scratch/rp06/sl5952/SHOP/.venv/bin/activate
 
 cd ..
 # Run training
-python train.py --config configs/cotton80_r18.yaml >> out_train_v100.txt
+python train.py --config configs/cotton80_resnet18.yaml >> out_train_v100.txt
