@@ -313,6 +313,11 @@ def create_shop_model(
 
 # Pre-defined model configurations
 SHOP_CONFIGS = {
+    'shop_resnet18': {
+        'backbone_name': 'resnet18',
+        'proj_dim': 32,
+        'use_low_rank_cov': True,
+    },
     'shop_resnet50': {
         'backbone_name': 'resnet50',
         'proj_dim': 32,
