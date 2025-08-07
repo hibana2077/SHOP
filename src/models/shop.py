@@ -7,8 +7,7 @@ from typing import Optional, Tuple
 class SHOPMLP(nn.Module):
     def __init__(self, in_channels: int, num_classes: int):
         super().__init__()
-        self.hidden_size = 512
-        self.intermediate_size = 256
+        self.intermediate_size = 2048
         self.gate_proj = nn.Linear(in_channels, self.intermediate_size, bias=False)
         self.up_proj = nn.Linear(in_channels, self.intermediate_size, bias=False)
         self.down_proj = nn.Linear(self.intermediate_size, num_classes, bias=False)
