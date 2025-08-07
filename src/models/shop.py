@@ -56,7 +56,7 @@ class SHOPHead(nn.Module):
         
         # Calculate output feature dimension
         feature_dim = in_channels  # GAP
-        # feature_dim += 2 * in_channels  # per-channel 3rd and 4th order moments
+        feature_dim += 2 * in_channels  # per-channel 3rd and 4th order moments
         # feature_dim += 2 * proj_dim  # cross-channel 3rd and 4th order moments
         
         if use_low_rank_cov:
@@ -185,10 +185,10 @@ class SHOPHead(nn.Module):
         
         # 4. Combine all features
         # features = [gap_features, moment_3, moment_4, cross_moment_3, cross_moment_4]
-        # features = [moment_3, moment_4]
-        features = [
-            gap_features
-        ]
+        features = [gap_features, moment_3, moment_4]
+        # features = [
+        #     gap_features
+        # ]
         
         # 5. Optional low-rank covariance
         if self.use_low_rank_cov:
